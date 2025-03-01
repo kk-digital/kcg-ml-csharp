@@ -1,0 +1,26 @@
+Folder PATH listing for volume Acer
+Volume serial number is 12C1-6A1E
+C:.
+¦   .gitignore
+¦   kcg-ml-csharp.sln
+¦   README.md
+¦   structure.txt
+¦   
++---data
+¦       .gitkeep
+¦       
++---DatasetLoaderText
+¦       DatasetLoaderText.csproj
+¦       
++---NanoGpt
+¦       input.txt
+¦       NanoGpt.cs
+¦       NanoGpt.csproj
+¦       
++---Shared
+        DataSampler.cs
+        Enums.cs
+        HelperFunctions.cs
+        Shared.csproj
+        TokenEncoder.cs
+        
