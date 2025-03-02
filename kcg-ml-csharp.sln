@@ -6,6 +6,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gpu-test", "gpu-test\gpu-te
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cpu-test", "cpu-test\cpu-test.csproj", "{E473B088-5048-4660-9D56-5E8200592F40}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dataset-loader-text", "dataset-loader-text\dataset-loader-text.csproj", "{532D05B0-AC31-4E08-A96D-252F01D98C98}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +26,9 @@ Global
 		{E473B088-5048-4660-9D56-5E8200592F40}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E473B088-5048-4660-9D56-5E8200592F40}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E473B088-5048-4660-9D56-5E8200592F40}.Release|Any CPU.Build.0 = Release|Any CPU
+		{532D05B0-AC31-4E08-A96D-252F01D98C98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{532D05B0-AC31-4E08-A96D-252F01D98C98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{532D05B0-AC31-4E08-A96D-252F01D98C98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{532D05B0-AC31-4E08-A96D-252F01D98C98}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
