@@ -17,6 +17,8 @@ public class NeuralNetworkTrainingTest
     [Test]
     public void TestNeuralNetworkTraining()
     {
+        if (!cuda.is_available()) return; // Skip if no GPU
+        
         Linear inputToHiddenLayer = Linear(InputSize, HiddenLayerSize);
         Linear hiddenToOutputLayer = Linear(HiddenLayerSize, OutputSize);
 

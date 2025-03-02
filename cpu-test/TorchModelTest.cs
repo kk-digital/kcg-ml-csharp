@@ -14,8 +14,8 @@ namespace TorchSharpTests
         [SetUp]
         public void Setup()
         {
-            var lin1 = Linear(1000, 100);
-            var lin2 = Linear(100, 10);
+            Linear lin1 = Linear(1000, 100);
+            Linear lin2 = Linear(100, 10);
             seq = Sequential(("lin1", lin1), ("relu1", ReLU()), ("drop1", Dropout(0.1)), ("lin2", lin2));
             optimizer = torch.optim.Adam(seq.parameters());
         }
@@ -23,19 +23,19 @@ namespace TorchSharpTests
         [Test]
         public void ForwardPass_ShouldReturnCorrectShape()
         {
-            using var x = torch.randn(64, 1000);
-            using var eval = seq.forward(x);
+            using torch.Tensor x = torch.randn(64, 1000);
+            using torch.Tensor eval = seq.forward(x);
             
             Assert.AreEqual(new long[] { 64, 10 }, eval.shape);
         }
-
+        
         [Test]
         public void LossComputation_ShouldNotThrowException()
         {
-            using var x = torch.randn(64, 1000);
-            using var y = torch.randn(64, 10);
-            using var eval = seq.forward(x);
-            using var output = functional.mse_loss(eval, y, Reduction.Sum);
+            using torch.Tensor x = torch.randn(64, 1000);
+            using torch.Tensor y = torch.randn(64, 10);
+            using torch.Tensor eval = seq.forward(x);
+            using torch.Tensor output = functional.mse_loss(eval, y, Reduction.Sum);
 
             Assert.DoesNotThrow(() => output.backward());
         }
@@ -43,10 +43,10 @@ namespace TorchSharpTests
         [Test]
         public void OptimizerStep_ShouldUpdateParameters()
         {
-            using var x = torch.randn(64, 1000);
-            using var y = torch.randn(64, 10);
-            using var eval = seq.forward(x);
-            using var output = functional.mse_loss(eval, y, Reduction.Sum);
+            using torch.Tensor x = torch.randn(64, 1000);
+            using torch.Tensor y = torch.randn(64, 10);
+            using torch.Tensor eval = seq.forward(x);
+            using torch.Tensor output = functional.mse_loss(eval, y, Reduction.Sum);
 
             optimizer.zero_grad();
             output.backward();
