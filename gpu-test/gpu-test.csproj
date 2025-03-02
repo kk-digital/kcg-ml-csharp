@@ -10,6 +10,17 @@
         <IsTestProject>true</IsTestProject>
     </PropertyGroup>
 
+    <PropertyGroup>
+        <!-- Define constant for TorchSharp version -->
+        <TorchSharpVersion>0.100.7</TorchSharpVersion>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="TorchSharp" Version="$(TorchSharpVersion)" />
+
+        <!-- Use CUDA version if UseCuda is true -->
+        <PackageReference Include="TorchSharp-cuda-windows" Version="$(TorchSharpVersion)"/>
+    </ItemGroup>
+    
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.1"/>
         <PackageReference Include="NUnit" Version="3.13.3"/>
