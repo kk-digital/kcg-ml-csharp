@@ -7,19 +7,22 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
     </PropertyGroup>
-
+    
     <PropertyGroup>
+        <!-- Define constant for TorchSharp version -->
+        <TorchSharpVersion>0.100.7</TorchSharpVersion>
+        <!-- Set to 'true' for CUDA, 'false' for CPU -->
         <UseCuda>true</UseCuda> <!-- Change this to false for CPU -->
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="TorchSharp" Version="0.100.7" />
+        <PackageReference Include="TorchSharp" Version="$(TorchSharpVersion)" />
 
         <!-- Use CUDA version if UseCuda is true -->
-        <PackageReference Include="TorchSharp-cuda-windows" Version="0.100.7" Condition="'$(UseCuda)' == 'true'" />
+        <PackageReference Include="TorchSharp-cuda-windows" Version="$(TorchSharpVersion)" Condition="'$(UseCuda)' == 'true'" />
 
         <!-- Use CPU version if UseCuda is false -->
-        <PackageReference Include="TorchSharp-cpu" Version="0.100.7" Condition="'$(UseCuda)' == 'false'" />
+        <PackageReference Include="TorchSharp-cpu" Version="$(TorchSharpVersion)" Condition="'$(UseCuda)' == 'false'" />
     </ItemGroup>
     
     <ItemGroup>
