@@ -5,6 +5,7 @@
         <RootNamespace>dataset_loader_text</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
+        <OutputPath>build/</OutputPath>
     </PropertyGroup>
 
 </Project>
