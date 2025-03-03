@@ -5,6 +5,7 @@
         <TargetFramework>net7.0</TargetFramework>
         <RootNamespace>nano_gpt</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
         <OutputPath>build/</OutputPath>
     </PropertyGroup>
     
