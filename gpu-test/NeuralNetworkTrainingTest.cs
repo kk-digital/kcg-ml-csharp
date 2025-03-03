@@ -7,12 +7,12 @@ using static TorchSharp.torch.nn;
 [TestFixture]
 public class NeuralNetworkTrainingTest
 {
-    private const int InputSize = 1000;
-    private const int HiddenLayerSize = 100;
-    private const int OutputSize = 10;
-    private const int BatchSize = 64;
-    private const int TrainingIterations = 10;
-    private const float DropoutProbability = 0.1f;
+    public const int InputSize = 1000;
+    public const int HiddenLayerSize = 100;
+    public const int OutputSize = 10;
+    public const int BatchSize = 64;
+    public const int TrainingIterations = 10;
+    public const float DropoutProbability = 0.1f;
 
     [Test]
     public void TestNeuralNetworkTraining()
