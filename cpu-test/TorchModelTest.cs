@@ -8,8 +8,8 @@ namespace TorchSharpTests
     [TestFixture]
     public class TorchSharpModelTests
     {
-        private Sequential seq;
-        private torch.optim.Optimizer optimizer;
+        public Sequential seq;
+        public torch.optim.Optimizer optimizer;
 
         [SetUp]
         public void Setup()
