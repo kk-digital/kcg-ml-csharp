@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
+        <!-- <OutputType>Exe</OutputType> -->
         <TargetFramework>net7.0</TargetFramework>
         <RootNamespace>nano_gpt</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -29,6 +29,10 @@
 
         <!-- Use CPU version if UseCuda is false -->
         <PackageReference Include="TorchSharp-cpu" Version="$(TorchSharpVersion)" Condition="'$(UseCuda)' == 'false'" />
+
+        <!-- Use kcg-xlib library for logging, io operations etc -->
+        <ProjectReference Include="..\..\kcg-xlib\lib-log\lib-log.csproj" />
+        <ProjectReference Include="..\..\kcg-xlib\lib-io\lib-io.csproj" />
     </ItemGroup>
     
     <ItemGroup>

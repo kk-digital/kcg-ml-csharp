@@ -1,8 +1,9 @@
 ﻿using Shared;
-using System.Diagnostics;
 using TorchSharp;
 using TorchSharp.Modules;
 using Tensor = TorchSharp.torch.Tensor;
+using Settings = NanoGptSetting.Settings;
+using LogUtility;
 // ReSharper disable All
 #pragma warning disable IDE0059
 
@@ -11,282 +12,6 @@ namespace Gpt;
 // Translated from python code written by Andrej Karpathy https://www.youtube.com/watch?v=kCc8FmEb1nY
 // Comments are a mix of my comments, comments from the video, and GPT-4
 // Timestamps of video in comments
-
-// Exact settings from video in comments, will likely cause your GPU to run out of 
-// memory if you try with CUDA
-internal static class Settings
-{
-    /// <summary>
-    /// Controls whether to train the model or go straight to generating
-    /// </summary>
-    public static Mode Mode { get; set; } = Mode.Train;
-    public static string SaveLocation(int vocabSize) => $"C:\\Models\\NanoGpt_{SettingsKey}_{vocabSize}.dat";
-    public static string SettingsKey => $"{Device.type}_{NEmbed}_{NHead}_{NLayer}";
-
-    /// <summary>
-    /// Controls whether to generate tokens at each evaluations internal, in addition
-    /// to evaluating the loss.
-    /// </summary>
-    public static bool GenerateOnEvaluate { get; set; } = true;
-    /// <summary>
-    /// Max number of times the models weights will be updated.
-    /// Also how many forward passes of the model to perform.
-    /// </summary>
-    public static int MaxIterations { get; set; } = 20000;
-    /// <summary>
-    /// Controls how often to evaluate the model
-    /// </summary>
-    public static int EvalInterval { get; set; } = 250; // Video 750
-    /// <summary>
-    /// Controls how many times to calculate the loss when evaluating the model.
-    /// More eval iterations gives a more accurate estimate of the models performance.
-    /// </summary>
-    public static int EvalIterations { get; set; } = 100; // Video 200
-    /// <summary>
-    /// Controls where the tensors live
-    /// </summary>
-    public static torch.Device Device = null!;
-    /// <summary>
-    /// The number of samples processed in one iteration of model training.
-    /// A larger batch size requires more memory but can lead to faster convergence.
-    /// </summary>
-    public const int BatchSize = 64;
-    /// <summary>
-    /// The number of tokens in each batch.
-    /// Higher block size increases memory usage.
-    /// </summary>
-    public const int BlockSize = 256;
-    /// <summary>
-    /// The learning rate for the optimizer.
-    /// This controls the size of the updates to the model's weights during training.
-    /// </summary>
-    public const double LearningRate = 3e-4;
-    /// <summary>
-    /// The dropout rate applied to layers during training to prevent overfitting.
-    /// Dropout randomly sets input units to 0 at each update during training time,
-    /// which helps to regularize the model.
-    /// </summary>
-    public const double DropoutValue = 0.2;
-    /// <summary>
-    /// The size of the embedding layer.
-    /// This represents the size of the vectors used to
-    /// encode the tokens into continuous vectors before
-    /// feeding them into the model.
-    /// </summary>
-    public const int NEmbed = 384; 
-    /// <summary>
-    /// The number of attention heads in the transformer model.
-    /// Multiple heads allow the model to jointly attend to characters
-    /// at different positions in the input.
-    /// </summary>
-    public const int NHead = 6; 
-    /// <summary>
-    /// Size/dimension of each head's output. The division ensures each head processes a segment of 
-    /// the embedding dimension
-    /// </summary>
-    public const int HeadSize = NEmbed / NHead;
-    /// <summary>
-    /// The number of transformer layers in the model.
-    /// Each layer consists of a multi-head attention mechanism
-    /// followed by a feed-forward network.
-    /// More layers can increase the model's capacity to learn complex patterns.
-    /// </summary>
-    public const int NLayer = 6;
-}
-public static class Program
-{
-    private static void Main(string[] args)
-    {
-        // You will need a good GPU to train this model, not all of us have A100s
-        #if USE_GPU
-        Settings.Device = torch.cuda.is_available() ? torch.CUDA : torch.CPU; // Change to CUDA if you have good gpu and install CUDA driver in shared csproj by uncommenting
-        #else
-        Settings.Device = torch.cuda.is_available() ? torch.CPU : torch.CPU; // Change to CUDA if you have good gpu and install CUDA driver in shared csproj by uncommenting
-        #endif
-        if (Settings.Device.type == DeviceType.CUDA)
-        {
-            torch.InitializeDeviceType(DeviceType.CUDA);
-        }
-
-        // Set a manual seed for reproducibility
-        torch.manual_seed(1337);
-
-        string text = File.ReadAllText("input.txt");
-
-        // Create a vocabulary from unique characters
-        char[] chars = text.Distinct().OrderBy(c => c).ToArray();
-        var vocabSize = chars.Length;
-
-        Console.WriteLine($"Vocab size: {vocabSize}");
-        Console.WriteLine("Vocab: " + string.Join("", chars));
-
-        // Token encoder to convert characters to and from tokens/IDs
-        TokenEncoder tokenEncoder = new TokenEncoder(chars);
-
-        if (Settings.Mode == Mode.Train)
-        {
-            Train(tokenEncoder, text, vocabSize);
-        }
-        else
-        {
-            Generate(tokenEncoder, vocabSize);
-        }
-    }
-
-    private static void Train(TokenEncoder tokenEncoder, string text, int vocabSize)
-    {
-        List<short> encoded = tokenEncoder.Encode(text);
-
-        // One dimensional tensor of all the encoded tokens [ 0, 32, 45,... ]
-        Tensor data = torch.tensor(encoded, torch.ScalarType.Int64);
-
-        long numberToTrain = (long)(data.shape[0] * 0.9);
-        long numberToTest = data.shape[0] - numberToTrain;
-
-        // Split the data into training and testing
-        // 90% for training, 10% for testing
-        Tensor trainData = data[..(int)numberToTrain];
-        Tensor testData = data[(int)numberToTrain..];
-
-        Console.WriteLine(numberToTrain);
-        Console.WriteLine(numberToTest);
-
-        DataSampler dataSampler = new DataSampler(trainData, testData);
-        GptLanguageModel model = new GptLanguageModel("My_Language_Model", vocabSize).to(Settings.Device);
-        if (File.Exists(Settings.SaveLocation(vocabSize)))
-        {
-            model.load(Settings.SaveLocation(vocabSize));
-        }
-
-        // Timestamp: 35:15
-        AdamW optimizer = torch.optim.AdamW(model.parameters(), lr: Settings.LearningRate);
-
-        var parameterCount = model.parameters().Sum(p => p.numel());
-        Console.WriteLine($"Parameters Count: {parameterCount}");
-
-        // just to time the length of an iteration
-        Stopwatch stopwatch = new Stopwatch();
-
-        float[] lowestEval = new [] { float.MaxValue, float.MaxValue };
-        int patienceCounter = 0;
-        for (int i = 0; i < Settings.MaxIterations; i++)
-        {
-            // Check if it's time to evaluate the model based on the evaluation interval setting.
-            // This is done periodically and not at every single training step to save compute time.
-            if (i != 0 && i % Settings.EvalInterval == 0)
-            {
-                // Calculate the loss on the training and test data sets
-                float[] losses = EstimateLoss(model, dataSampler);
-                Console.WriteLine($"step {i}: train loss {losses[0]:F4}, val loss {losses[1]:F4}");
-
-                // If the current losses are the lowest observed, update the best model checkpoint.
-                if (losses[0] < lowestEval[0] && losses[1] < lowestEval[1])
-                {
-                    lowestEval = losses;
-                    var directory = Path.GetDirectoryName(Settings.SaveLocation(vocabSize));
-                    if (!Directory.Exists(directory))
-                    {
-                        Directory.CreateDirectory(directory!);
-                    }
-                    model.save(Settings.SaveLocation(vocabSize));
-                    patienceCounter = 0;
-                }
-                // Allow the model some leeway so it can explore different
-                // pathways. Sometimes you have to take 1 step backwards
-                // to take 2 steps forwards.
-                else if (patienceCounter < 4)
-                {
-                    patienceCounter++;
-                }
-                // If the model still hasn't improved, revert to the previous best model.
-                else
-                {
-                    if (File.Exists(Settings.SaveLocation(vocabSize)))
-                    {
-                        model.load(Settings.SaveLocation(vocabSize));
-                        patienceCounter = 0;
-                    }
-                }
-
-                if (Settings.GenerateOnEvaluate)
-                {
-                    model.GenerateAndPrint(tokenEncoder, maxNewTokens: 200);
-                }
-            }
-            stopwatch.Restart();
-
-            // Get random input blocks from the train data
-            // with their respective targets. Targets
-            // are just the input tensors offset by 1 index
-            // to the right, they represent what
-            // is supposed to come next.
-            (Tensor inputs, Tensor targets) = dataSampler.RandomSamples(DataType.Train, Settings.BatchSize, Settings.BlockSize, Settings.Device);
-
-            // Pass the 'inputs' through the GPT model to obtain predictions ('logits') and calculate the loss with respect to 'targets'.
-            // The 'logits' tensor contains raw prediction values for each token in the vocabulary, while 'loss' represents the model's error.
-            (Tensor logits, Tensor? loss) = model.Forward(inputs, targets);
-
-            // Reset gradients accumulated in the optimizer from the previous iteration.
-            optimizer.zero_grad();
-
-            // Backpropagate the error: Compute gradients of the loss with respect to model parameters.
-            // This will affect the weights and biases in every tensor in the computation graph leading
-            // to the calculation of loss, which is everything because we just did a forward pass of the
-            // whole model. All the embedding tables, linear layers, layer norms, etc. in all the modules
-            // and sub-modules will be updated.
-            // Gradients are computed using derivates and chain rule.
-            loss?.backward();
-
-            // Update the model's weights based on computed gradients.
-            optimizer.step();
-
-            stopwatch.Stop();
-            Console.WriteLine($"step {i}: iteration time milliseconds: {stopwatch.ElapsedMilliseconds:F0}");
-        }
-
-        // Timestamp: 32:15
-        model.GenerateAndPrint(tokenEncoder, maxNewTokens: 500);
-        model.save(Settings.SaveLocation(vocabSize));
-    }
-
-    private static void Generate(TokenEncoder tokenEncoder, int vocabSize)
-    {
-        GptLanguageModel model = new GptLanguageModel("My_Language_Model", vocabSize).to(Settings.Device);
-        if (File.Exists(Settings.SaveLocation(vocabSize)))
-        {
-            model.load(Settings.SaveLocation(vocabSize));
-        }
-        model.GenerateAndPrint(tokenEncoder, int.MaxValue);
-    }
-
-
-    /// <summary>
-    /// Estimates the loss of the model across different data types (Train, Test).
-    /// Used to evaluate the model's performance by calculating the average loss over a set number of iterations.
-    /// Gradient computation is temporarily disabled to optimize memory usage and computation time during this evaluation phase.
-    /// </summary>
-    // Timestamp: 40:00
-    private static float[] EstimateLoss(GptLanguageModel model, DataSampler dataSampler)
-    {
-        using var noGrad = torch.no_grad();
-        var dataTypes = Enum.GetValues<DataType>();
-        float[] results = new float[dataTypes.Length];
-        model.eval();
-        foreach (var dataType in dataTypes)
-        {
-            var losses = torch.zeros(Settings.EvalIterations);
-            for (int k = 0; k < Settings.EvalIterations - 1; k++)
-            {
-                (Tensor inputs, Tensor targets) = dataSampler.RandomSamples(dataType, Settings.BatchSize, Settings.BlockSize, Settings.Device);
-                (Tensor logits, Tensor? loss) = model.Forward(inputs, targets);
-                losses[k] = loss!.item<float>();
-            }
-            results[(int)dataType] = losses.mean().item<float>();
-        }
-        model.train();
-        return results;
-    }
-}
 
 /// <summary>
 /// Represents a single attention head in the multi-head attention mechanism.
@@ -656,15 +381,15 @@ public sealed class GptLanguageModel : torch.nn.Module
 
     public void GenerateAndPrint(TokenEncoder tokenEncoder, int maxNewTokens)
     {
-        Console.WriteLine("\n====Generating:====\n");
+        LibLog.LogInfo("\n====Generating:====\n");
 
         // Timestamp: 32:15
         Tensor context = torch.zeros(new long[] { 1, 1 }, dtype: torch.ScalarType.Int64).to(Settings.Device);
         foreach (var token in Generate(context, maxNewTokens))
         {
-            Console.Write(tokenEncoder.Decode(token));
+            LibLog.LogInfo(tokenEncoder.Decode(token).ToString());
         }
 
-        Console.WriteLine("\n\n====Generation Completed====\n");
+        LibLog.LogInfo("\n\n====Generation Completed====\n");
     }
 }
