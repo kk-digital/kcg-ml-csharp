@@ -12,15 +12,16 @@
         5)  sudo apt update
         6)  sudo apt-get install -y dotnet-sdk-7.0
 
-    4.  build & run NanoGpt:
+    4.  prepare dotnet package for building:
+        dotnet add package System.CommandLine --version 2.0.0-beta1.21308.1
+
+    5.  build & run NanoGpt:
         1) run with CPU:
             #1. set "UseCuda" to false in nano-gpt/nano-gpt.csproj
-            #2. set "public static Mode Mode" to "Mode.Generate" in nano-gpt/NanoGptSetting.cs for generating, "Mode.Train" for training
-            #3. cd nano-gpt-main && dotnet run
-            #4. if it raise error asking for absolute path, replace "input.txt" path with absolute path in nano-gpt-main/Program.cs, and set "public static string SaveLocation" with linux absolute path in nano-gpt/NanoGptSetting.cs.
+            #2. cd nano-gpt-main && dotnet build
+            #3. ./build/net7.0/nano-gpt-main --running-mode <inference | training> --train-file /path/to/kcg-ml-csharp/nano-gpt/input.txt --weight-dir /path/to/nanogpt/weight/data/dir
 
         2) run with GPU:
             #1. set "UseCuda" to true and replace "TorchSharp-cuda-window" with "TorchSharp-cuda-linux"  in nano-gpt/nano-gpt.csproj
-            #2. set "public static Mode Mode" to "Mode.Generate" in nano-gpt/NanoGptSetting.cs for generating, "Mode.Train" for training
-            #3. cd nano-gpt-main && dotnet run
-            #4. if it raise error asking for absolute path, replace "input.txt" path with absolute path in nano-gpt-main/Program.cs, and set "public static string SaveLocation" with linux absolute path in nano-gpt/NanoGptSetting.cs.
+            #2. cd nano-gpt-main && dotnet build
+            #3. ./build/net7.0/nano-gpt-main --running-mode <inference | training> --train-file /path/to/kcg-ml-csharp/nano-gpt/input.txt --weight-dir /path/to/nanogpt/weight/data/dir

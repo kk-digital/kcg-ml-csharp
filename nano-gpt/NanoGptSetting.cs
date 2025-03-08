@@ -10,8 +10,10 @@ namespace NanoGptSetting
         /// <summary>
         /// Controls whether to train the model or go straight to generating
         /// </summary>
+        public string TrainFile = "kcg-ml-csharp/nano-gpt/input.txt";
+        public string NanoGptWeightDataDir = "C:/Models/";
         public static Mode Mode { get; set; } = Mode.Train;
-        public static string SaveLocation(int vocabSize) => $"C:\\Models\\NanoGpt_{SettingsKey}_{vocabSize}.dat";
+        public static string SaveLocation(int vocabSize) => $"{NanoGptWeightDataDir}NanoGpt_{SettingsKey}_{vocabSize}.dat";
         public static string SettingsKey => $"{Device.type}_{NEmbed}_{NHead}_{NLayer}";
 
         /// <summary>
