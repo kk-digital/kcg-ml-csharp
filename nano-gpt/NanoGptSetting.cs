@@ -3,6 +3,14 @@ using TorchSharp;
 
 namespace NanoGptSetting
 {
+    public class ArgsSettings
+    {
+        public string inputTrainData = "../nano-gpt/input.txt";
+        public string savedWeightDataDir = "C:/Models/";
+        public  Mode Mode = Mode.Train;
+
+        public string SaveLocation(int vocabSize) => $"{this.savedWeightDataDir}/NanoGpt_{Settings.SettingsKey}_{vocabSize}.dat";
+    }
     // Exact settings from video in comments, will likely cause your GPU to run out of 
     // memory if you try with CUDA
     public static class Settings
