@@ -1,9 +1,9 @@
 using MonoTorrent;
 using MonoTorrent.Client;
 using CommandLine;
+using System.Threading.Tasks;
 
-
-public class TorrentAdder
+public static class TorrentAdder
 {
     public static async Task AddTorrent(ClientEngine client, string torrentFile, string downloadDir)
     {
@@ -35,49 +35,11 @@ public class TorrentAdder
                                  $"Status: {status}\n" +
                                  $"Download rate: {Utility.ConvertSizeToReadable(metrics.DownloadRate)}\n" +
                                  $"Upload rate: {Utility.ConvertSizeToReadable(metrics.UploadRate)}\n" +
-                                 $"Peers: {manager.Peers}\n" + // Corrected this to use Count
+                                 $"Peers: {manager.Peers}\n" +  // Corrected this to use Count
                                  $"Download remaining: {Utility.ConvertSizeToReadable(torrent.Size - bytesDownloaded)}\n" + // Corrected subtraction
                                  $"Total size: {Utility.ConvertSizeToReadable(torrent.Size)}";
             Console.WriteLine(torrentInfo);
         }
-    }
-
-    public static void Main(string[] args)
-    {
-        // Setup command line arguments for downloading datasets
-        var result = Parser.Default.ParseArguments<CommandLineOptions>(args);
-        result.WithParsed(options =>
-        {
-            string[] datasetNames = options.DatasetNames;
-            string downloadDir = options.DownloadDir;
-
-            // Create EngineSettings without manual port configuration
-            var config = new EngineSettings();
-
-            // Create the ClientEngine (this replaces LibtorrentSession)
-            ClientEngine client = new ClientEngine(config);
-
-            try
-            {
-                // Add torrents
-                for (int fileIndex = 0; fileIndex < datasetNames.Length; fileIndex++)
-                {
-                    string torrentFilePath = Path.Combine(Directory.GetCurrentDirectory(), "data_torrent", datasetNames[fileIndex] + ".torrent");
-                    AddTorrent(client, torrentFilePath, downloadDir);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"An error occurred: {e.Message}");
-            }
-
-            // Continuously check and display torrent information
-            while (true)
-            {
-                Thread.Sleep(30 * 1000); // Keep downloading
-                ListTorrents(client);
-            }
-        });
     }
 }
 

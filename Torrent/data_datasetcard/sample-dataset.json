@@ -1,0 +1,20 @@
+{
+    "name": "sample-dataset",
+    "description": "This is a sample dataset used for testing torrent creation.",
+    "size": 104857600,  
+    "files": [
+      {
+        "file_name": "sample-file-1.csv",
+        "file_size": 52428800,
+        "hash": "sha256:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      },
+      {
+        "file_name": "sample-file-2.csv",
+        "file_size": 52428800, 
+        "hash": "sha256:yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy"
+      }
+    ],
+    "created_at": "2025-03-08T00:00:00Z",
+    "version": "1.0"
+  }
+  

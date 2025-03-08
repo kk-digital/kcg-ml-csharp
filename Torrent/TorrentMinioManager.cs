@@ -64,47 +64,7 @@ public class TorrentMinioManager
         }
     }
 
-    public static void Main(string[] args)
-    {
-        // Define a class for command-line options
-        var parser = new Parser();
-
-        // Parse the arguments
-        var result = parser.ParseArguments<TorrentCommandOptions>(args);
-
-        result.WithParsed(options =>
-        {
-            string ip = options.IsPublic ? MinioSettings.MinioPublicAddress : MinioSettings.MinioIpAddress;
-            MinioClient client = ConnectToMinio(ip);
-
-            switch (options.Command)
-            {
-                case "list":
-                    ListTorrents(client);
-                    break;
-                case "upload":
-                    UploadTorrent(client, options.DatasetName);
-                    break;
-                case "download":
-                    DownloadTorrent(client, options.DatasetName);
-                    break;
-                case "remove":
-                    RemoveTorrent(client, options.DatasetName);
-                    break;
-                case "help":
-                    // Print the help or display usage instructions
-                    // parser.ShowHelp();
-                    break;
-                default:
-                    Console.WriteLine("Invalid command.");
-                    break;
-            }
-        })
-        .WithNotParsed(errors =>
-        {
-            Console.WriteLine("Invalid arguments!");
-        });
-    }
+   
 }
 
 // Renamed the class to TorrentCommandOptions to avoid conflict with other Options classes
