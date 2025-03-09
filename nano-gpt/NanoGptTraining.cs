@@ -3,6 +3,7 @@ using System.Diagnostics;
 using TorchSharp;
 using TorchSharp.Modules;
 using Tensor = TorchSharp.torch.Tensor;
+using NanoGptSetting;
 using Settings = NanoGptSetting.Settings;
 using Gpt;
 using LogUtility;
@@ -13,7 +14,7 @@ namespace NanoGptTraining
 {
     public class Training
     {
-        public static void Train(TokenEncoder tokenEncoder, string text, int vocabSize)
+        public static void Train(TokenEncoder tokenEncoder, string text, int vocabSize, ArgsSettings argsSettings)
         {
             List<short> encoded = tokenEncoder.Encode(text);
 
@@ -33,9 +34,9 @@ namespace NanoGptTraining
 
             DataSampler dataSampler = new DataSampler(trainData, testData);
             GptLanguageModel model = new GptLanguageModel("My_Language_Model", vocabSize).to(Settings.Device);
-            if (FileUtils.FileExists(Settings.SaveLocation(vocabSize)))
+            if (FileUtils.FileExists(argsSettings.SaveLocation(vocabSize)))
             {
-                model.load(Settings.SaveLocation(vocabSize));
+                model.load(argsSettings.SaveLocation(vocabSize));
             }
 
             // Timestamp: 35:15
@@ -63,12 +64,12 @@ namespace NanoGptTraining
                     if (losses[0] < lowestEval[0] && losses[1] < lowestEval[1])
                     {
                         lowestEval = losses;
-                        var directory = PathUtils.GetDirectoryName(Settings.SaveLocation(vocabSize));
+                        var directory = PathUtils.GetDirectoryName(argsSettings.SaveLocation(vocabSize));
                         if (!FileUtils.DirectoryExists(directory))
                         {
                             FileUtils.CreateDirectory(directory!);
                         }
-                        model.save(Settings.SaveLocation(vocabSize));
+                        model.save(argsSettings.SaveLocation(vocabSize));
                         patienceCounter = 0;
                     }
                     // Allow the model some leeway so it can explore different
@@ -81,9 +82,9 @@ namespace NanoGptTraining
                     // If the model still hasn't improved, revert to the previous best model.
                     else
                     {
-                        if (FileUtils.FileExists(Settings.SaveLocation(vocabSize)))
+                        if (FileUtils.FileExists(argsSettings.SaveLocation(vocabSize)))
                         {
-                            model.load(Settings.SaveLocation(vocabSize));
+                            model.load(argsSettings.SaveLocation(vocabSize));
                             patienceCounter = 0;
                         }
                     }
@@ -126,7 +127,7 @@ namespace NanoGptTraining
 
             // Timestamp: 32:15
             model.GenerateAndPrint(tokenEncoder, maxNewTokens: 500);
-            model.save(Settings.SaveLocation(vocabSize));
+            model.save(argsSettings.SaveLocation(vocabSize));
         }
 
 
