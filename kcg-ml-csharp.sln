@@ -1,12 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nano-gpt", "nano-gpt\nano-gpt.csproj", "{2230C083-BDD7-4BA1-AA96-345B725B169C}"
-EndProject
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.35821.62
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "gpu-test", "gpu-test\gpu-test.csproj", "{FFEBE8E4-6027-432A-AAA8-4CA4C439FF23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "cpu-test", "cpu-test\cpu-test.csproj", "{E473B088-5048-4660-9D56-5E8200592F40}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "dataset-loader-text", "dataset-loader-text\dataset-loader-text.csproj", "{532D05B0-AC31-4E08-A96D-252F01D98C98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nano-gpt-base", "nano-gpt-base\nano-gpt-base.csproj", "{ED156051-C51D-6CEC-2E5B-E70ED6FCEBAF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nano-gpt-cli-cpu", "nano-gpt-cli-cpu\nano-gpt-cli-cpu.csproj", "{5D3B2E38-06A6-C336-D09F-4336D1025E00}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nano-gpt-cli-gpu", "nano-gpt-cli-gpu\nano-gpt-cli-gpu.csproj", "{D04293AD-AA51-7344-5506-73EBE125D0FB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nano-gpt-cpu", "nano-gpt-cpu\nano-gpt-cpu.csproj", "{9D536D1C-78DF-ABDF-4C97-E3EB905DC06A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "nano-gpt-gpu", "nano-gpt-gpu\nano-gpt-gpu.csproj", "{2C12B63F-B6D2-DE7C-E828-E87DB92E5B1D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,10 +25,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2230C083-BDD7-4BA1-AA96-345B725B169C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2230C083-BDD7-4BA1-AA96-345B725B169C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2230C083-BDD7-4BA1-AA96-345B725B169C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2230C083-BDD7-4BA1-AA96-345B725B169C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FFEBE8E4-6027-432A-AAA8-4CA4C439FF23}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FFEBE8E4-6027-432A-AAA8-4CA4C439FF23}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFEBE8E4-6027-432A-AAA8-4CA4C439FF23}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -30,5 +37,31 @@ Global
 		{532D05B0-AC31-4E08-A96D-252F01D98C98}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{532D05B0-AC31-4E08-A96D-252F01D98C98}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{532D05B0-AC31-4E08-A96D-252F01D98C98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ED156051-C51D-6CEC-2E5B-E70ED6FCEBAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED156051-C51D-6CEC-2E5B-E70ED6FCEBAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED156051-C51D-6CEC-2E5B-E70ED6FCEBAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED156051-C51D-6CEC-2E5B-E70ED6FCEBAF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5D3B2E38-06A6-C336-D09F-4336D1025E00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5D3B2E38-06A6-C336-D09F-4336D1025E00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5D3B2E38-06A6-C336-D09F-4336D1025E00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5D3B2E38-06A6-C336-D09F-4336D1025E00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D04293AD-AA51-7344-5506-73EBE125D0FB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D04293AD-AA51-7344-5506-73EBE125D0FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D04293AD-AA51-7344-5506-73EBE125D0FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D04293AD-AA51-7344-5506-73EBE125D0FB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D536D1C-78DF-ABDF-4C97-E3EB905DC06A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D536D1C-78DF-ABDF-4C97-E3EB905DC06A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D536D1C-78DF-ABDF-4C97-E3EB905DC06A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D536D1C-78DF-ABDF-4C97-E3EB905DC06A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C12B63F-B6D2-DE7C-E828-E87DB92E5B1D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C12B63F-B6D2-DE7C-E828-E87DB92E5B1D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C12B63F-B6D2-DE7C-E828-E87DB92E5B1D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C12B63F-B6D2-DE7C-E828-E87DB92E5B1D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B3FD5738-F0E7-4A3E-98E2-1C7A38C67DEC}
 	EndGlobalSection
 EndGlobal

@@ -3,7 +3,7 @@
     <PropertyGroup>
         <!-- <OutputType>Exe</OutputType> -->
         <TargetFramework>net7.0</TargetFramework>
-        <RootNamespace>nano_gpt</RootNamespace>
+        <RootNamespace>nano_gpt_cpu</RootNamespace>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>disable</Nullable>
         <OutputPath>build/</OutputPath>
@@ -12,23 +12,15 @@
     <PropertyGroup>
         <!-- Define constant for TorchSharp version -->
         <TorchSharpVersion>0.100.7</TorchSharpVersion>
-        <!-- Set to 'true' for CUDA, 'false' for CPU -->
-        <UseCuda>true</UseCuda> <!-- Change this to false for CPU -->
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(UseCuda)' == 'true'">
-        <!-- Define conditional compilation symbol based on UseCuda -->
-        <DefineConstants>USE_GPU</DefineConstants>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="TorchSharp" Version="$(TorchSharpVersion)" />
-
-        <!-- Use CUDA version if UseCuda is true -->
-        <PackageReference Include="TorchSharp-cuda-windows" Version="$(TorchSharpVersion)" Condition="'$(UseCuda)' == 'true'" />
-
         <!-- Use CPU version if UseCuda is false -->
-        <PackageReference Include="TorchSharp-cpu" Version="$(TorchSharpVersion)" Condition="'$(UseCuda)' == 'false'" />
+        <PackageReference Include="TorchSharp-cpu" Version="$(TorchSharpVersion)" />
+
+        <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
+
+        <ProjectReference Include="../nano-gpt-base/nano-gpt-base.csproj" />
 
         <!-- Use kcg-xlib library for logging, io operations etc -->
         <ProjectReference Include="..\..\kcg-xlib\lib-log\lib-log.csproj" />

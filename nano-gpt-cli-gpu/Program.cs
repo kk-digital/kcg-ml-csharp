@@ -1,5 +1,10 @@
+using System;
+using System.CommandLine;
+using System.CommandLine.Invocation;
+using System.Threading.Tasks;
 using Shared;
 using TorchSharp;
+using NanoGptArgsSettings;
 using Settings = NanoGptSetting.Settings;
 using NanoGptGenerating;
 using NanoGptTraining;
@@ -13,6 +18,8 @@ public static class Program
 {
     public static void Main(string[] args)
     {
+        ArgsSettings argsSettings = new ArgsSettings(args);
+
         if (Settings.Device.type == DeviceType.CUDA)
         {
             torch.InitializeDeviceType(DeviceType.CUDA);
@@ -22,7 +29,7 @@ public static class Program
         torch.manual_seed(1337);
 
         // necessary to use absolute path of input.txt
-        string text = FileUtils.ReadAllText("absolute\\path\\to\\input.txt");
+        string text = FileUtils.ReadAllText(argsSettings.inputTrainData);
 
         // Create a vocabulary from unique characters
         char[] chars = text.Distinct().OrderBy(c => c).ToArray();
@@ -34,13 +41,13 @@ public static class Program
         // Token encoder to convert characters to and from tokens/IDs
         TokenEncoder tokenEncoder = new TokenEncoder(chars);
 
-        if (Settings.Mode == Mode.Train)
+        if (argsSettings.Mode == Mode.Train)
         {
-            Training.Train(tokenEncoder, text, vocabSize);
+            Training.Train(tokenEncoder, text, vocabSize, argsSettings);
         }
         else
         {
-            Generating.Generate(tokenEncoder, vocabSize);
+            Generating.Generate(tokenEncoder, vocabSize, argsSettings);
         }
     }
 }
