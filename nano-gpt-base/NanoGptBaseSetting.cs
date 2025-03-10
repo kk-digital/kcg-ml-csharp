@@ -1,16 +1,8 @@
 using Shared;
 using TorchSharp;
 
-namespace NanoGptSetting
+namespace NanoGptBaseSetting
 {
-    public class ArgsSettings
-    {
-        public string inputTrainData = "../nano-gpt/input.txt";
-        public string savedWeightDataDir = "C:/Models/";
-        public  Mode Mode = Mode.Train;
-
-        public string SaveLocation(int vocabSize) => $"{this.savedWeightDataDir}/NanoGpt_{Settings.SettingsKey}_{vocabSize}.dat";
-    }
     // Exact settings from video in comments, will likely cause your GPU to run out of 
     // memory if you try with CUDA
     public static class Settings
@@ -19,8 +11,6 @@ namespace NanoGptSetting
         /// Controls whether to train the model or go straight to generating
         /// </summary>
         public static Mode Mode { get; set; } = Mode.Train;
-        public static string SaveLocation(int vocabSize) => $"C:\\Models\\NanoGpt_{SettingsKey}_{vocabSize}.dat";
-        public static string SettingsKey => $"{Device.type}_{NEmbed}_{NHead}_{NLayer}";
 
         /// <summary>
         /// Controls whether to generate tokens at each evaluations internal, in addition
@@ -44,13 +34,6 @@ namespace NanoGptSetting
         /// <summary>
         /// Controls where the tensors live
         /// </summary>
-
-        // You will need a good GPU to train this model, not all of us have A100s
-        #if USE_GPU
-        public static torch.Device Device = torch.cuda.is_available() ? torch.CUDA : torch.CPU; // Change to CUDA if you have good gpu and install CUDA driver in shared csproj by uncommenting
-        #else
-        public static torch.Device Device = torch.cuda.is_available() ? torch.CPU : torch.CPU; // Change to CUDA if you have good gpu and install CUDA driver in shared csproj by uncommenting
-        #endif
 
         /// <summary>
         /// The number of samples processed in one iteration of model training.

@@ -15,13 +15,7 @@
     4.  prepare dotnet package for building:
         dotnet add package System.CommandLine --version 2.0.0-beta1.21308.1
 
-    5.  build & run NanoGpt:
-        1) run with CPU:
-            #1. set "UseCuda" to false in nano-gpt/nano-gpt.csproj
-            #2. cd cmd  && dotnet build
-            #3. ./build/net7.0/cmd  --running-mode <inference | training> --train-file /path/to/kcg-ml-csharp/nano-gpt/input.txt --weight-dir /path/to/nanogpt/weight/data/dir
-
-        2) run with GPU:
-            #1. set "UseCuda" to true and replace "TorchSharp-cuda-window" with "TorchSharp-cuda-linux"  in nano-gpt/nano-gpt.csproj
-            #2. cd cmd  && dotnet build
-            #3. ./build/net7.0/cmd  --running-mode <inference | training> --train-file /path/to/kcg-ml-csharp/nano-gpt/input.txt --weight-dir /path/to/nanogpt/weight/data/dir
+    5.  build & run NanoGptGPU:
+        1) replace "TorchSharp-cuda-window" with "TorchSharp-cuda-linux" in kcg-ml-csharp/nano-gpt-gpu/nano-gpt-gpu.csproj
+        2) cd kcg-ml-csharp/nano-gpt-cli-gpu  && dotnet build
+        3) ./build/net7.0/nano-gpt-cli-gpu  --running-mode <inference | training> --train-file /path/to/txt/data --weight-dir /path/to/nanogpt/weight/data/dir
