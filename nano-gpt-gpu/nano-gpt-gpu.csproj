@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- <OutputType>Exe</OutputType> -->
+        <TargetFramework>net7.0</TargetFramework>
+        <RootNamespace>nano_gpt_gpu</RootNamespace>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <OutputPath>build/</OutputPath>
+    </PropertyGroup>
+    
+    <PropertyGroup>
+        <!-- Define constant for TorchSharp version -->
+        <TorchSharpVersion>0.100.7</TorchSharpVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!-- Use CUDA version if UseCuda is true -->
+        <PackageReference Include="TorchSharp-cuda-window" Version="$(TorchSharpVersion)" />
+
+        <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
+
+        <ProjectReference Include="../nano-gpt-base/nano-gpt-base.csproj" />
+
+        <!-- Use kcg-xlib library for logging, io operations etc -->
+        <ProjectReference Include="..\..\kcg-xlib\lib-log\lib-log.csproj" />
+        <ProjectReference Include="..\..\kcg-xlib\lib-io\lib-io.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Update="input.txt">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+</Project>
